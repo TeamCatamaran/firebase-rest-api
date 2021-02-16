@@ -1,19 +1,21 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import * as express from 'express';
-import * as cors from 'cors';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+import * as express from "express";
+import * as cors from "cors";
+import { checkIfAuthenticated } from "./middleware/auth";
 
 const app = express();
 app.use(cors({ origin: true }));
+app.use(checkIfAuthenticated);
 
-const serviceAccount = require('./account.json');
+const serviceAccount = require("./account.json");
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
 const db = admin.firestore();
 
 // create
-app.post('/api/:collection_name', (req, res) => {
+app.post("/:collection_name", (req, res) => {
     (async () => {
         const collectionName = req.params.collection_name;
         if (collectionName == null) {
@@ -27,7 +29,7 @@ app.post('/api/:collection_name', (req, res) => {
             const item = await document.get();
             const data = item.data() || {};
             data.id = item.id;
-            res.setHeader('Location', `/api/${collectionName}/${item.id}`);
+            res.setHeader("Location", `/api/${collectionName}/${item.id}`);
             return res.status(201).send(data);
         } catch (error) {
             console.error(error);
@@ -37,7 +39,7 @@ app.post('/api/:collection_name', (req, res) => {
 });
 
 // delete
-app.delete('/api/:collection_name/:item_id', (req, res) => {
+app.delete("/:collection_name/:item_id", (req, res) => {
     (async () => {
         const collectionName = req.params.collection_name;
         if (collectionName == null) {
@@ -60,7 +62,7 @@ app.delete('/api/:collection_name/:item_id', (req, res) => {
 });
 
 // get item
-app.get('/api/:collection_name/:item_id', (req, res) => {
+app.get("/:collection_name/:item_id", (req, res) => {
     (async () => {
         const collectionName = req.params.collection_name;
         if (collectionName == null) {
@@ -85,7 +87,7 @@ app.get('/api/:collection_name/:item_id', (req, res) => {
 });
 
 // get all
-app.get('/api/:collection_name', (req, res) => {
+app.get("/:collection_name", (req, res) => {
     (async () => {
         const collectionName = req.params.collection_name;
         if (collectionName == null) {
@@ -95,7 +97,7 @@ app.get('/api/:collection_name', (req, res) => {
         try {
             let query = db.collection(collectionName);
             let response: any[] = [];
-            await query.get().then(snapshot => {
+            await query.get().then((snapshot) => {
                 snapshot.forEach((doc) => {
                     const item = doc.data();
                     item.id = doc.id;
@@ -111,7 +113,7 @@ app.get('/api/:collection_name', (req, res) => {
 });
 
 // update
-app.put('/api/:collection_name/:item_id', (req, res) => {
+app.put("/:collection_name/:item_id", (req, res) => {
     (async () => {
         const collectionName = req.params.collection_name;
         if (collectionName == null) {
@@ -135,4 +137,4 @@ app.put('/api/:collection_name/:item_id', (req, res) => {
     })();
 });
 
-exports.app = functions.https.onRequest(app);
+exports.api = functions.https.onRequest(app);
