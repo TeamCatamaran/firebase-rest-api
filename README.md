@@ -2,10 +2,6 @@
 
 This repository is a typescript project that adds a rest API for firestore.
 
-In order to create an app with Firebase please access the [Firebase Console](https://console.firebase.google.com/). When configuring your local firebase codebase, make sure you select typescript as your language, not javascript.
-
-In order to learn about the Firebase Admin SDK please access [Firebase Documentation](https://firebase.google.com/docs/reference/admin).
-
 This project is a boilerplate of the `functions` folder for the API endpoints.
 
 The `postman_collection.json` file is a postman collection that has example calls that you can run. It is available for import here: https://raw.githubusercontent.com/phess101/firebase-rest-api/main/postman_collection.json
@@ -13,8 +9,13 @@ The `postman_collection.json` file is a postman collection that has example call
 - Folder `deployed` are calls when running the functions deployed.
 - Collection uses the following environment variables for local testing: `project-id`, `project-region`, `item-id`. Production environment will need a valid authorization bearer token that can be generated from the [firebase SDK](https://firebase.google.com/docs/auth). Please review the Postman documentation for more info on [how to set this up here](https://blog.getpostman.com/2014/02/20/using-variables-inside-postman-and-collection-runner/).
 
+## Getting Started
+
 ## Setup
-- Create a service account in your firebase project. Copy the private key into the functions/lib folder, and name the file `account.json`
+- Refer to [Get started: write, test, and deploy your first functions](https://firebase.google.com/docs/functions/get-started) to configure the firebase CLI
+    - When configuring your local firebase codebase, make sure you select typescript as your language, not javascript
+    - In the get started steps linked above, you can follow steps 1-3
+- Create a service account in your firebase project. Copy the private key into the functions/lib folder, and name the file `account.json`. Refer to [Add the Firebase Admin SDK](https://firebase.google.com/docs/admin/setup). The relevant step had the headline `Initialize the SDK`
 - Enable [firebase authentication](https://firebase.google.com/docs/auth)
 - Edit the `unless` function parameters in index.ts for all routes that unauthenticated users can access. For example, `app.use(unless(checkIfAuthenticated, "/user/login"));` allows unauthenticated access only to the `/api/user/login` route. Remove this line entirely if not using authentication.
 - Add any additional API routes below the default routes in `index.ts`
