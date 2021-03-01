@@ -1,8 +1,8 @@
 # firebase-rest-api boilerplate
 
-This repository is a boilerplate typescript firebase function project that adds a rest API for firestore.
+This repository is a typescript project that adds a rest API for firestore.
 
-In order to create an app with Firebase please access the [Firebase Console](https://console.firebase.google.com/).
+In order to create an app with Firebase please access the [Firebase Console](https://console.firebase.google.com/). When configuring your local firebase codebase, make sure you select typescript as your language, not javascript.
 
 In order to learn about the Firebase Admin SDK please access [Firebase Documentation](https://firebase.google.com/docs/reference/admin).
 
