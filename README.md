@@ -30,15 +30,15 @@ Will run your function in us-east4 with 1GB memory. Full configuration can be fo
 
 ## How to use
 
-To run the project, execute the following
+To run the project for local testing, execute the following
 
 `npm run serve`
 
-To refresh the server when the code changes, open an additional terminal and run
+In order to refresh the server when the typescript code changes, open an additional terminal and run
 
 `npm run watch`
 
-To deploy the project to your firebase functions, execute the following
+To deploy the project to your project's firebase functions, execute the following
 
 `npm run deploy`
 
