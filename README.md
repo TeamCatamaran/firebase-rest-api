@@ -41,3 +41,7 @@ To refresh the server when the code changes, open an additional terminal and run
 To deploy the project to your firebase functions, execute the following
 
 `npm run deploy`
+
+## Resources
+
+Much of the code in this project is based on [how to build a firebase api](https://github.com/andrewevans0102/how-to-build-a-firebase-api)
