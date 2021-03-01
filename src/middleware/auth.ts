@@ -19,6 +19,15 @@ export const checkIfAuthenticated = (req: any, res: any, next: any) => {
     getAuthToken(req, res, async () => {
         try {
             const { authToken } = req;
+            if (req.get('host').startsWith('localhost') && authToken === 'postman-test-token') {
+                // authToken = 'postman-test-token' only valid for localhost requests
+                return next();
+            }
+            if (authToken == null) {
+                return res
+                    .status(401)
+                    .send({ error: "Unauthorized" });
+            }
             const userInfo = await admin
                 .auth()
                 .verifyIdToken(authToken);
@@ -27,7 +36,7 @@ export const checkIfAuthenticated = (req: any, res: any, next: any) => {
         } catch (e) {
             return res
                 .status(401)
-                .send({ error: "You are not authorized to make this request" });
+                .send({ error: "Unauthorized" });
         }
     });
 };

@@ -30,7 +30,7 @@ module.exports = {
     "@typescript-eslint/unified-signatures": "warn",
     "comma-dangle": "warn",
     "constructor-super": "error",
-    eqeqeq: ["warn", "always"],
+    eqeqeq: ["warn", "allow-null"],
     "import/no-deprecated": "warn",
     "import/no-extraneous-dependencies": "error",
     "import/no-unassigned-import": "warn",

@@ -2,11 +2,11 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import * as express from "express";
 import * as cors from "cors";
+import * as bodyParser from "body-parser";
 import { checkIfAuthenticated } from "./middleware/auth";
 
 const app = express();
 app.use(cors({ origin: true }));
-app.use(checkIfAuthenticated);
 
 const serviceAccount = require("./account.json");
 admin.initializeApp({
@@ -14,127 +14,22 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-// create
-app.post("/:collection_name", (req, res) => {
-    (async () => {
-        const collectionName = req.params.collection_name;
-        if (collectionName == null) {
-            return res.status(400);
-        }
-        const itemRef = db.collection(collectionName).doc();
+const unless = (middleware: any, ...paths: string[]) => {
+    return (req: any, res: any, next: any) => {
+        const pathCheck = paths.some((path) => path === req.path);
+        pathCheck ? next() : middleware(req, res, next);
+    };
+};
 
-        try {
-            const document = db.collection(collectionName).doc(itemRef.id);
-            await document.create(req.body);
-            const item = await document.get();
-            const data = item.data() || {};
-            data.id = item.id;
-            res.setHeader("Location", `/api/${collectionName}/${item.id}`);
-            return res.status(201).send(data);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).send(error);
-        }
-    })();
-});
+// Add express middleware
+app.use(unless(checkIfAuthenticated, "/user/login"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// delete
-app.delete("/:collection_name/:item_id", (req, res) => {
-    (async () => {
-        const collectionName = req.params.collection_name;
-        if (collectionName == null) {
-            return res.status(400);
-        }
-        const itemId = req.params.item_id;
-        if (itemId == null) {
-            return res.status(400);
-        }
+// Add default API routes
+import * as defaultRoutes from "./routes/defaultRoutes";
+defaultRoutes.addRoutes(app, db);
 
-        try {
-            const document = db.collection(collectionName).doc(itemId);
-            await document.delete();
-            return res.status(204).send();
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(error);
-        }
-    })();
-});
-
-// get item
-app.get("/:collection_name/:item_id", (req, res) => {
-    (async () => {
-        const collectionName = req.params.collection_name;
-        if (collectionName == null) {
-            return res.status(400);
-        }
-        const itemId = req.params.item_id;
-        if (itemId == null) {
-            return res.status(400);
-        }
-
-        try {
-            const document = db.collection(collectionName).doc(itemId);
-            const item = await document.get();
-            const data = item.data() || {};
-            data.id = item.id;
-            return res.status(200).send(data);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(error);
-        }
-    })();
-});
-
-// get all
-app.get("/:collection_name", (req, res) => {
-    (async () => {
-        const collectionName = req.params.collection_name;
-        if (collectionName == null) {
-            return res.status(400);
-        }
-
-        try {
-            let query = db.collection(collectionName);
-            let response: any[] = [];
-            await query.get().then((snapshot) => {
-                snapshot.forEach((doc) => {
-                    const item = doc.data();
-                    item.id = doc.id;
-                    response.push(item);
-                });
-            });
-            return res.status(200).send(response);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).send(error);
-        }
-    })();
-});
-
-// update
-app.put("/:collection_name/:item_id", (req, res) => {
-    (async () => {
-        const collectionName = req.params.collection_name;
-        if (collectionName == null) {
-            return res.status(400);
-        }
-        const itemId = req.params.item_id;
-        if (itemId == null) {
-            return res.status(400);
-        }
-
-        console.log(req.body);
-
-        try {
-            await db.collection(collectionName).doc(itemId)
-                .set(req.body);
-            return res.status(201).send(itemId);
-        } catch (error) {
-            console.error(error);
-            return res.status(500).send(error);
-        }
-    })();
-});
-
-exports.api = functions.https.onRequest(app);
+exports.api = functions
+    .https
+    .onRequest(app);
