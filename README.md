@@ -4,12 +4,10 @@ This repository is a typescript project that adds a rest API for firestore.
 
 This project is a boilerplate of the `functions` folder for the API endpoints.
 
-The `postman_collection.json` file is a postman collection that has example calls that you can run. It is available for import here: https://raw.githubusercontent.com/phess101/firebase-rest-api/main/postman_collection.json
+The `postman_collection.json` file is a postman collection that has example calls that you can run. It is available for import here: https://raw.githubusercontent.com/TeamCatamaran/firebase-rest-api/main/postman_collection.json
 - Folder `localhost` are calls when running the functions locally
 - Folder `deployed` are calls when running the functions deployed.
 - Collection uses the following environment variables for local testing: `project-id`, `project-region`, `item-id`. Production environment will need a valid authorization bearer token that can be generated from the [firebase SDK](https://firebase.google.com/docs/auth). Please review the Postman documentation for more info on [how to set this up here](https://blog.getpostman.com/2014/02/20/using-variables-inside-postman-and-collection-runner/).
-
-## Getting Started
 
 ## Setup
 - Refer to [Get started: write, test, and deploy your first functions](https://firebase.google.com/docs/functions/get-started) to configure the firebase CLI
